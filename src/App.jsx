@@ -4,6 +4,8 @@ import HomePage from './pages/HomePage';
 import CategoryPage from './pages/CategoryPage';
 import SeriePage from './pages/SeriePage';
 import SerieFormPage from './pages/SerieFormPage';
+import CategoryFormPage from "./pages/CategoryFormPage";
+
 
 function App() {
   return (
@@ -14,6 +16,7 @@ function App() {
         <Route path="/categories" element={<CategoryPage />} />
         <Route path="/series" element={<SeriePage />} />
         <Route path="/series/new" element={<SerieFormPage />} />
+        <Route path="/categories/new" element={<CategoryFormPage />} />
       </Routes>
     </BrowserRouter>
   );

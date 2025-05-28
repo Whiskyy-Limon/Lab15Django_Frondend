@@ -1,3 +1,5 @@
+import React from "react";
+
 function SerieComponent(props) {
   const handleEliminarClick = () => {
     props.onEliminar(props.codigo);
