@@ -1,18 +1,30 @@
 import HeaderComponent from "../components/HeaderComponent";
 import { useState } from "react";
+import axios from "axios"; // ✅ Importa axios
+import { useNavigate } from "react-router-dom"; // ✅ Para redirigir después
 
 function CategoryFormPage() {
   const [data, setData] = useState({
     nombre: ""
   });
 
+  const navigate = useNavigate();
+  const urlApi = "http://localhost:8000/api/categories/";
+
   const onChangeNombre = (e) => {
     setData({ ...data, nombre: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Datos enviados:", data);
+    try {
+      console.log("➡️ Enviando:", data);
+      await axios.post(urlApi, { description: data.nombre }); // 👈 Campo correcto
+      console.log("✅ Categoría creada");
+      navigate("/categories"); // ✅ Redirige al listado
+    } catch (error) {
+      console.error("❌ Error:", error.response?.data || error.message);
+    }
   };
 
   return (
