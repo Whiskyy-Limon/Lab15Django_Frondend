@@ -2,42 +2,28 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import HeaderComponent from "../components/HeaderComponent";
+import { getCategories, deleteCategory } from "../services/category.service";
 
 function CategoryPage() {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
-  const urlApi = "http://localhost:8000/api/categories/";
-
-  // Obtener las categorías del backend
-  const fetchCategories = async () => {
-    try {
-      const res = await axios.get(urlApi);
-      // Si tienes paginación en DRF:
-      const data = res.data.results || res.data;
-      setCategories(data);
-    } catch (error) {
-      console.error("Error al cargar categorías:", error);
-    }
-  };
+  
+  const loadData = async () => {
+    const response = await getCategories();
+    setCategories(response.data.results);
+  }
 
   useEffect(() => {
-    fetchCategories();
+    loadData();
   }, []);
 
-  // Eliminar categoría
   const handleDelete = async (id) => {
-    if (!window.confirm("¿Estás seguro de eliminar esta categoría?")) return;
-    try {
-      await axios.delete(`${urlApi}${id}/`);
-      fetchCategories(); // volver a cargar
-    } catch (error) {
-      console.error("Error al eliminar categoría:", error);
-    }
+    await deleteCategory(id);
+    loadData();
   };
 
   return (
     <>
-      <HeaderComponent />
       <div className="container mt-3">
         <div className="d-flex justify-content-between border-bottom pb-3 mb-3">
           <h3>Categorías</h3>

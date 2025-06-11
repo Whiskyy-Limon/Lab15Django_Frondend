@@ -1,38 +1,42 @@
 import HeaderComponent from "../components/HeaderComponent";
-import { useState } from "react";
-import axios from "axios"; // ✅ Importa axios
-import { useNavigate } from "react-router-dom"; // ✅ Para redirigir después
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { createCategory, updateCategory } from "../services/category.service";
 
 function CategoryFormPage() {
+
+  const params = useParams();
+
   const [data, setData] = useState({
-    nombre: ""
+    description: ""
   });
 
   const navigate = useNavigate();
-  const urlApi = "http://localhost:8000/api/categories/";
 
   const onChangeNombre = (e) => {
-    setData({ ...data, nombre: e.target.value });
+    setData({ ...data, description: e.target.value });
+    console.log(data);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      console.log("➡️ Enviando:", data);
-      await axios.post(urlApi, { description: data.nombre }); // 👈 Campo correcto
-      console.log("✅ Categoría creada");
-      navigate("/categories"); // ✅ Redirige al listado
-    } catch (error) {
-      console.error("❌ Error:", error.response?.data || error.message);
+    if (params.id) {
+      await updateCategory(params.id, data); 
+    } else {
+      await createCategory(data);
     }
+    navigate("/categories");
   };
 
   return (
     <>
-      <HeaderComponent />
       <div className="container mt-3">
         <div className="border-bottom pb-3 mb-3">
-          <h3>Nueva Categoría</h3>
+          {params.id?
+            <h3>Actualizar Categoria</h3> 
+          :
+            <h3>Nueva Categoría</h3>
+          }
         </div>
         <form className="row" onSubmit={handleSubmit}>
           <div className="col-md-8">

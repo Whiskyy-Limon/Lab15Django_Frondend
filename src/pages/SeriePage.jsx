@@ -1,4 +1,3 @@
-import HeaderComponent from "../components/HeaderComponent";
 import SerieComponent from "../components/SerieComponent";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -30,7 +29,6 @@ function SeriePage() {
 
   return (
     <>
-      <HeaderComponent />
       <div className="container mt-3">
         <div className="d-flex justify-content-between border-bottom pb-3 mb-3">
           <h3>Series</h3>
