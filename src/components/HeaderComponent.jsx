@@ -1,6 +1,15 @@
-import { NavLink } from "react-router-dom"
+import { useContext } from "react";
+import { useNavigate, NavLink } from "react-router-dom";
+import { AppContext } from "../contexts/AppContext";
 
 function HeaderComponent() {
+    const { usuario, logout } = useContext(AppContext);
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate("/");
+    };
 
     return (
         <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -12,25 +21,27 @@ function HeaderComponent() {
                 <div className="collapse navbar-collapse" id="navbarText">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item">
-                            <a className="nav-link" href="/home">Inicio</a>
+                            <NavLink className="nav-link" to="/home">Inicio</NavLink>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="/categories">Categorías</a>
+                            <NavLink className="nav-link" to="/categories">Categorías</NavLink>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="/series">Series</a>
+                            <NavLink className="nav-link" to="/series">Series</NavLink>
                         </li>
                     </ul>
-                    <div>
-                        Bienvenido Jhon Due 
-                        <div className="text-end">
-                            <a href="/">Salir</a>
-                        </div> 
-                    </div>
+                    {usuario && (
+                        <div className="d-flex align-items-center">
+                            <span className="me-3">Bienvenido {usuario.username}</span>
+                            <button className="btn btn-outline-danger btn-sm" onClick={handleLogout}>
+                                Salir
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </nav>
-    )
+    );
 }
-  
-export default HeaderComponent
+
+export default HeaderComponent;

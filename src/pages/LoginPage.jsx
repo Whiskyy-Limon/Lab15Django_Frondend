@@ -1,15 +1,41 @@
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../contexts/AppContext";
+import { loginService } from "../services/LoginService";
+import { jwtDecode } from "jwt-decode";
 
-function LoginPage(){
+function LoginPage() {
     const navigate = useNavigate();
-    
-    const handleSubmit = async (e)=>{
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const { login } = useContext(AppContext);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        navigate("/series");
-    }
+        try {
+            const data = await loginService({ username, password });
+
+            // Guardar el token
+            localStorage.setItem("accessToken", data.access);
+
+            // Decodificar el token
+            const decoded = jwtDecode(data.access);
+
+            // Guardar info en el contexto (opcional)
+            login({
+                name: decoded.name,
+                email: decoded.email,
+                token: data.access
+            });
+
+            navigate("/series");
+        } catch (error) {
+            alert("Credenciales incorrectas");
+        }
+    };
 
     return (
-    	<section className="d-flex justify-content-center align-items-center min-vh-100">
+        <section className="d-flex justify-content-center align-items-center min-vh-100">
             <div className="container">
                 <div className="row justify-content-sm-center">
                     <div className="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
@@ -18,23 +44,33 @@ function LoginPage(){
                                 <h1 className="fs-4 card-title fw-bold mb-4">Login</h1>
                                 <form onSubmit={handleSubmit} autoComplete="off">
                                     <div className="mb-3">
-                                        <label className="mb-2 text-muted" htmlFor="email">E-Mail</label>
-                                        <input id="email" type="email" className="form-control" name="email" required autoFocus />
+                                        <label className="mb-2 text-muted" htmlFor="username">Usuario</label>
+                                        <input
+                                            id="username"
+                                            type="text"
+                                            className="form-control"
+                                            name="username"
+                                            value={username}
+                                            onChange={(e) => setUsername(e.target.value)}
+                                            required
+                                            autoFocus
+                                        />
                                     </div>
                                     <div className="mb-3">
                                         <div className="mb-2 w-100">
                                             <label className="text-muted" htmlFor="password">Contraseña</label>
-                                            <a href="forgot.html" className="float-end">
-                                                Recuperar Contraseña?
-                                            </a>
                                         </div>
-                                        <input id="password" type="password" className="form-control" name="password" required />
+                                        <input
+                                            id="password"
+                                            type="password"
+                                            className="form-control"
+                                            name="password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            required
+                                        />
                                     </div>
                                     <div className="d-flex align-items-center">
-                                        <div className="form-check">
-                                            <input type="checkbox" name="remember" id="remember" className="form-check-input" />
-                                            <label htmlFor="remember" className="form-check-label">Recordarme</label>
-                                        </div>
                                         <button type="submit" className="btn btn-primary ms-auto">
                                             Ingresar
                                         </button>
@@ -48,7 +84,7 @@ function LoginPage(){
                     </div>
                 </div>
             </div>
-    	</section>
+        </section>
     );
 }
 
