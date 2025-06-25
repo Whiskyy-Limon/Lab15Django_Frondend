@@ -32,7 +32,7 @@ function HeaderComponent() {
                     </ul>
                     {usuario && (
                         <div className="d-flex align-items-center">
-                            <span className="me-3">Bienvenido {usuario.username}</span>
+                            <span className="me-3">Bienvenido {usuario.name}</span>
                             <button className="btn btn-outline-danger btn-sm" onClick={handleLogout}>
                                 Salir
                             </button>
